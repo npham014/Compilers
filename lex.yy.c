@@ -464,7 +464,9 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "calc.lex"
 /***Definitions***/
-#line 3 "calc.lex"
+#line 4 "calc.lex"
+#include "y.tab.h"
+#include <string.h>
 int minusCount = 0;
 int plusCount = 0;
 int equalsCount = 0;
@@ -473,8 +475,10 @@ int divCount = 0;
 int lParCount = 0;
 int rParCount = 0;
 int intCount = 0;
+int curCol = 0;
+int curLine = 1;
 /***Rules***/
-#line 478 "lex.yy.c"
+#line 482 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -656,9 +660,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 16 "calc.lex"
+#line 21 "calc.lex"
 
-#line 662 "lex.yy.c"
+#line 666 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -743,91 +747,91 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 17 "calc.lex"
-{printf("SCINOTATION %s\n", yytext);}
+#line 22 "calc.lex"
+{/*printf("SCINOTATION %s\n", yytext);*/ curCol += yyleng;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "calc.lex"
-{printf("DECIMAL %s\n", yytext);}
+#line 23 "calc.lex"
+{/*printf("DECIMAL %s\n", yytext);*/ curCol += yyleng;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "calc.lex"
-{printf("NUMBER %s\n", yytext);intCount++;}
+#line 24 "calc.lex"
+{/*printf("NUMBER %s\n", yytext); */intCount++; yylval = atoi(yytext); curCol += yyleng; return INTNUM;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "calc.lex"
-{printf("MINUS\n"); minusCount++;}
+#line 25 "calc.lex"
+{/*printf("MINUS\n");*/ minusCount++;curCol += yyleng; return MINUS;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 "calc.lex"
-{printf("PLUS\n"); plusCount++;}
+#line 26 "calc.lex"
+{/*printf("PLUS\n");*/ plusCount++; curCol += yyleng; return PLUS;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 22 "calc.lex"
-{printf("EQUALS\n"); equalsCount++;}
+#line 27 "calc.lex"
+{/*printf("EQUALS\n");*/ equalsCount++; curCol += yyleng; return EQU;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 23 "calc.lex"
-{printf("MULT\n"); multCount++;}
+#line 28 "calc.lex"
+{/*printf("MULT\n");*/ multCount++; curCol += yyleng; return MULT;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 "calc.lex"
-{printf("DIV\n"); divCount++;}
+#line 29 "calc.lex"
+{/*printf("DIV\n");*/ divCount++; curCol += yyleng;return DIV;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 "calc.lex"
-{printf("L_PAREN\n");lParCount++;}
+#line 30 "calc.lex"
+{/*printf("L_PAREN\n");*/lParCount++; curCol += yyleng;return L_PAREN;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 26 "calc.lex"
-{printf("R_PAREN\n");rParCount++;}
+#line 31 "calc.lex"
+{/*printf("R_PAREN\n");*/rParCount++; curCol += yyleng;return R_PAREN;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 27 "calc.lex"
-{}
+#line 32 "calc.lex"
+{curCol += yyleng;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 28 "calc.lex"
-{}
+#line 33 "calc.lex"
+{curCol += yyleng;}
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 29 "calc.lex"
-{} 
+#line 34 "calc.lex"
+{curLine++; curCol = 0;return ENDL;} 
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 "calc.lex"
+#line 35 "calc.lex"
 {printf("Letters are not recognized by Calculator. Exiting"); exit(0);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 "calc.lex"
+#line 36 "calc.lex"
 {printf("Letters are not recognized by Calculator. Exiting"); exit(0);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 "calc.lex"
+#line 37 "calc.lex"
 {printf("Unrecognized Symbol. Exiting"); exit(0);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 34 "calc.lex"
+#line 39 "calc.lex"
 ECHO;
 	YY_BREAK
-#line 831 "lex.yy.c"
+#line 835 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1821,7 +1825,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 34 "calc.lex"
+#line 39 "calc.lex"
 
 
 int yywrap() {
@@ -1834,17 +1838,21 @@ int main(int argc, char** argv) {
 	else {
 		yyin = stdin;
 	}
-	yylex();
-	printf ("Num Integers: %d\n", intCount);
+	yyparse();
+	/*printf ("Num Integers: %d\n", intCount);
 	printf("Num Minus: %d\n", minusCount);
 	printf("Num Plus: %d\n", plusCount);
 	printf("Num Equals: %d\n", equalsCount);
 	printf("Num Mult: %d\n", multCount);
 	printf("Num Div: %d\n", divCount);
 	printf("Left Parentheses Count: %d\n", lParCount);
-	printf("Right Parentheses Count: %d\n", rParCount);
+	printf("Right Parentheses Count: %d\n", rParCount);*/
 	return 0;
 }
 
+void yyerror (const char* msg) {
+	printf("Error at Line %d, Column %d", curLine, curCol);
+	return;
+}
 
 
