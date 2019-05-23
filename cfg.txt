@@ -1,0 +1,87 @@
+PROGRAM -> FUNCTIONS EOF
+
+FUNCTIONS -> FUNCTION FUNCTIONS 
+| epsilon
+
+FUNCTION -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+declarations -> declaration SEMICOLON declarations
+| epsilon
+
+declaration -> identifiers COLON assigning
+
+assigning -> INTEGER
+| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+
+identifier -> IDENT
+| IDENT COMMA identifier
+
+statements -> statement SEMICOLON statements
+| epsilon
+
+statement -> var ASSIGN expression
+| IF booleanExpression THEN statements ENDIF
+| IF booleanExpression THEN statements ELSE statements ENDIF
+| WHILE booleanExpression BEGINLOOP statements ENDLOOP
+| DO BEGINLOOP statements ENDLOOP WHILE booleanExpression
+| READ variables
+| WRITE variables
+| CONTINUE
+| RETURN expression
+
+booleanExpression -> relatiandexpr
+| relatiandexpr OR booleanExpression
+
+relatiandexpr -> relationexpr 
+| relationexpr AND relatiandexpr
+
+relationexpr -> notrelationexpr
+| regrelationexpr
+
+notrelationexpr -> NOT regrelationexpr
+
+regrelationexpr -> expression comp expression
+| TRUE
+| FALSE
+| L_PAREN booleanExpression R_PAREN
+
+comp -> EQ
+|NEQ
+|LT
+|GT
+|LTE
+|GTE
+
+expressions -> expression COMMA expressions
+| expression
+
+expression -> multExpr
+| expression ADD multExpr
+| expression SUB multExpr
+
+multExpr -> term
+| multExpr MULT term
+| multExpr DIV term
+| multExpr MOD term
+
+term -> valTerm
+| idTerm
+
+valTerm -> negTerm
+|posTerm
+
+negTerm -> SUB var
+| SUB NUMBER /*number*/
+| SUB L_PAREN expression R_PAREN
+
+posTerm -> var
+| NUMBER /*number*/
+| L_PAREN expression R_PAREN
+
+idTerm -> identifier L_PAREN expressions R_PAREN
+
+variables -> var variables
+| var
+
+var -> identifier
+| identifier L_SQUARE_BRACKET expression R_SQUARE_BRACKET
